@@ -7,12 +7,13 @@ class User_string
         char *string;
         size_t size;
 
-    public:
-        User_string()
-            : string(nullptr), size(0)
-        {}
+        void set_string(const char *_string);
 
-        User_string(char *_string);
+    public:
+
+        User_string() = default;
+
+        User_string(const char *_string);
 
         User_string(const User_string& other);
         

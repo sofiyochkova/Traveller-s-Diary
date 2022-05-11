@@ -24,19 +24,36 @@ void write_user_in_file(std::ofstream& file, const User& new_user)
     write_user_strings(file, new_user);
 }
 
+bool validate_username(User_string& username)
+{
+    for(size_t i = 0; i < username.get_size(); i++)
+    {
+        if(!(username[i] >= '0' && username[i] <= '9') &&
+           !(username[i] >= 'A' && username[i] <= 'Z') &&
+           !(username[i] >= 'a' && username[i] <= 'z'))
+        {
+            std::cerr << "Invalid username! You can only use letters and numbers!\n";
+            return false;
+        }
+    }
+
+    return true;
+}
+
 void User::registration()
 {
-    std::cout << "Enter username: ";
-    std::cin >> username;
-
+    do
+    {
+        std::cout << "Enter username: ";
+        std::cin >> username;
+    } while (!validate_username(username));
+    
     std::cout << "Enter password: ";
+    std::cin.clear();
     std::cin >> password;
 
     std::cout << "Enter email address: ";
     std::cin >> email;
-
-    /*std::cout << username.get_size() << ' ' << password.get_size() << ' ' << email.get_size() << '\n';
-    std::cout << get_username() << ' ' << get_password() << ' ' << get_email() << '\n';*/
 
     write_user_in_file(users, *this);
 
@@ -57,9 +74,8 @@ std::ofstream create_user_database(const User& new_user)
 {
     User_string filename = new_user.get_username();
     filename += ext;
-    std::cout << filename.get_string() << '\n';
+ 
     std::ofstream user_db(filename.get_string(), std::ios::out | std::ios::binary);
-    write_user_in_file(user_db, new_user);
 
    return user_db;
 }

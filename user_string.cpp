@@ -3,22 +3,24 @@
 #include<algorithm>
 #include "user_string.hpp"
 
-User_string::User_string(char *_string)
+User_string::User_string(const char *_string)
+    : string(nullptr)
 {   
-    size = strlen(_string) + 1;
-
-    string = new char[size];
-    
-    strncpy(string, _string, strlen(_string));
-
-    string[size - 1] = '\0';
+    set_string(_string);
 }
 
 User_string::User_string(const User_string& other)
-    : size(other.size)
+    : string(nullptr), size(other.size)
 {
-    string = new char[other.size + 1];
-    strncpy(string, other.string, size);
+    set_string(other.get_string());
+}
+
+void User_string::set_string(const char *_string)
+{
+    delete[] string;
+    size = strlen(_string);
+    string = new char[size + 1];
+    strncpy(string, _string, size);
     string[size] = '\0';
 }
 
@@ -61,24 +63,21 @@ char User_string::operator[](size_t pos)
 std::istream& operator>>(std::istream& in, User_string& name)
 {
     in >> name.string;
-    name.size = strlen(name.string); 
+    name.size = strlen(name.get_string());
 
     return in;
 }
 
 int main1()
 {
-    char test1[] = "idkteeyeyeeyeyeyyeyeu";
-    char test2[] = "idkteeyeyeeyeyeyyey";
-    char test3[] = "\0";
-
-    User_string c(test3);
+    User_string k("idkteeyeyeeyeyeyyey");
+    
+    User_string c{"\0"};
     std::cin >> c;
 
-    User_string k(test2);
     std::cout << c.get_string() << " " << c.get_size() << '\n';
     
-    std::cout << (c == k) << '\n';
+   // std::cout << (c == k) << '\n';
 
     return 0;
 }

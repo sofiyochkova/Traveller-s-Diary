@@ -1,25 +1,38 @@
 #ifndef __TRAVELLERSDIARY_HPP
 #define __TRAVELLERSDIARY_HPP
+#include "user_string.hpp"
 
 class User
 {
     private:
-        char username[100];
-        char password[100];
-        char email[200];
-
-        friend void registration();
-        friend void login();
+        User_string username;
+        User_string password;
+        User_string email;
 
     public:
-        User(const char *_username = "\0", const char *_password = "\0", const char *_email = "\0");
+        User() = default;
 
-        char const *get_username() const { return username; }
-        char const *get_password() const { return password; }
-        char const *get_email() const { return email; }
+        User(const User_string _username, const User_string _password, const User_string _email)
+        : username(_username), password(_password), email(_email)
+        {}
+
+        void registration();
+        void login();
+
+        char *get_username() const { return username.get_string(); }
+        char *get_password() const { return password.get_string(); }
+        char *get_email() const { return email.get_string(); }
+
+        friend void validate_username(User_string& username);
+        friend void write_user_strings(std::ofstream& file, const User& new_user);
 };
 
-std::ofstream create_user_database(User& new_user);
+void menu();
+
+std::ofstream create_user_database(const User& new_user);
+
+//void write_user_strings(std::ofstream& file, const User& new_user);
+void write_user_in_file(std::ofstream& file, const User& new_user);
 
 struct Date
 {
@@ -31,12 +44,12 @@ struct Date
 class Diary
 {
     private:
-        char *destination;
+        User_string *destination;
         Date from;
         Date until;
         unsigned short grade;
-        char *comment;
-        char *photos;
+        User_string *comment;
+        User_string *photos;
 };
 
 #endif

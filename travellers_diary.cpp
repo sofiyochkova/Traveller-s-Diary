@@ -2,83 +2,66 @@
 #include<fstream>
 #include<cstring>
 #include "travellers_diary.hpp"
-//#include "user_string.hpp"
 
 const char ext[] = ".db";
-
+char test[] = "\0";
+    
 std::ofstream users("users.db", std::ios::out | std::ios::binary | std::ios::app);
 
-/*void write_user_in_file(std::ofstream& file, const User& new_user)
+void write_user_strings(std::ofstream& file, const User& new_user)
 {
-    file << new_user.get_username() << ' ' 
-         << new_user.get_password() << ' ' 
-         << new_user.get_email() << '\n' ;
+    file.write(new_user.get_username(), new_user.username.get_size() + 1);
 
-    file.close();
-}*/
+    file.write(new_user.get_password(), new_user.password.get_size() + 1);
+
+    file.write(new_user.get_email(), new_user.email.get_size() + 2);
+}
 
 void write_user_in_file(std::ofstream& file, const User& new_user)
 {
     file.seekp(0, std::ios::end);
-    file.write(reinterpret_cast<const char *>(&new_user), sizeof(User));
+
+    write_user_strings(file, new_user);
 }
 
-void registration()
+void User::registration()
 {
-    User u1;
-    
     std::cout << "Enter username: ";
-    std::cin >> u1.username;
+    std::cin >> username;
 
     std::cout << "Enter password: ";
-    std::cin >> u1.password;
+    std::cin >> password;
 
     std::cout << "Enter email address: ";
-    std::cin >> u1.email;
-    
-    write_user_in_file(users, u1);
+    std::cin >> email;
 
-    create_user_database(u1);
+    /*std::cout << username.get_size() << ' ' << password.get_size() << ' ' << email.get_size() << '\n';
+    std::cout << get_username() << ' ' << get_password() << ' ' << get_email() << '\n';*/
 
+    write_user_in_file(users, *this);
+
+    create_user_database(*this);
     std::cout << "You have registered successfully!\n";
 }
 
-void login()
+void User::login()
 {
-    User u1;
-
     std::cout << "Enter username: ";
-    std::cin >> u1.username;
+    std::cin >> username;
 
     std::cout << "Enter password: ";
-    std::cin >> u1.password;
+    std::cin >> password;
 }
 
-std::ofstream create_user_database(User& new_user)
+std::ofstream create_user_database(const User& new_user)
 {
-    char filename[105];
-    strncpy(filename, new_user.get_username(), strlen(new_user.get_username()) + 1);
-   // std::cout << filename;
-    strcat(filename, ext);
-    
-    filename[strlen(filename) + 1] = '\0';
-    //std::cout << filename << '\n';
-    std::ofstream user_db(filename, std::ios::out | std::ios::binary);
+    User_string filename = new_user.get_username();
+    filename += ext;
+    std::cout << filename.get_string() << '\n';
+    std::ofstream user_db(filename.get_string(), std::ios::out | std::ios::binary);
     write_user_in_file(user_db, new_user);
 
-    return user_db;
-}
-
-User::User(const char *_username, const char *_password, const char *_email)
-{
-    strncpy(username, _username, 100);
-    username[strlen(_username) - 1] = '\0';
-
-    strncpy(password, _password, 100);
-    username[strlen(_password) - 1] = '\0';
-
-    strncpy(email, _email, 200);
-    username[strlen(_email) - 1] = '\0';
+   return user_db;
 }
 
 std::ostream& menu_commands()
@@ -102,12 +85,14 @@ void menu()
 
         if(strcmp(command, "register") == 0)
         {
-            registration();
+            User u1(test, test, test);
+            u1.registration();
         }
 
         else if(strcmp(command, "login") == 0)
         {
-            login();
+            User u2(test, test, test);
+            u2.login();
         }
 
         else if(strcmp(command, "help") == 0)

@@ -1,7 +1,6 @@
 #include<iostream>
-#include<fstream>
 #include<cstring>
-#include "travellers_diary.hpp"
+#include "users.hpp"
 
 const char ext[] = ".db";
 char test[] = "\0";
@@ -68,6 +67,8 @@ void User::login()
 
     std::cout << "Enter password: ";
     std::cin >> password;
+
+    std::cout << "You have logged in successfully!\n";
 }
 
 std::ofstream create_user_database(const User& new_user)
@@ -91,32 +92,32 @@ std::ostream& menu_commands()
 
 void menu()
 {   
-    char command[100];
+    User_string command{"\0"};
 
     menu_commands();
 
-    while(strcmp(command, "exit") != 0)
+    while(command != "exit")
     {
         std::cin >> command;
 
-        if(strcmp(command, "register") == 0)
+        if(command == "register")
         {
             User u1(test, test, test);
             u1.registration();
         }
 
-        else if(strcmp(command, "login") == 0)
+        else if(command == "login")
         {
             User u2(test, test, test);
             u2.login();
         }
 
-        else if(strcmp(command, "help") == 0)
+        else if(command == "help")
         {
             menu_commands();
         }
 
-        else if(strcmp(command, "exit") != 0)
+        else if(command != "exit")
         {
             std::cerr << "Invalid command!\n";
         }

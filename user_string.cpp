@@ -29,6 +29,11 @@ bool User_string::operator==(const User_string& other)
     return strcmp(string, other.string) == 0;
 }
 
+bool User_string::operator!=(const User_string& other)
+{
+    return !(*this == other);
+}
+
 User_string& User_string::operator+=(const char rhs[])
 {
     strcat(this->get_string(), rhs);

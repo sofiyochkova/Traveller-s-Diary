@@ -1,6 +1,9 @@
 #ifndef __USER_STRING_HPP
 #define __USER_STRING_HPP
 
+#include <cstddef>
+#include<iostream>
+
 class User_string
 {
     private:
@@ -25,6 +28,7 @@ class User_string
         User_string& operator=(const User_string& other);
 
         bool operator==(const User_string& other);
+        bool operator!=(const User_string& other);
         char operator[](size_t pos);
         User_string& operator+=(const char rhs[]);
 

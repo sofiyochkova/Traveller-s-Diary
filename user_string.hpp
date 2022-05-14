@@ -39,4 +39,6 @@ class User_string
             delete[] string;
         }
 };
+
+void print_array_of_user_string(User_string *photos[], size_t photo_count);
 #endif

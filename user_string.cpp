@@ -60,10 +60,10 @@ void User_string::swap_string(User_string& other)
     std::swap(size, other.size);
 }
 
-char User_string::operator[](size_t pos)
+/*char User_string::operator[](size_t pos)
 {
     return string[pos];
-}
+}*/
 
 std::istream& operator>>(std::istream& in, User_string& name)
 {
@@ -71,6 +71,14 @@ std::istream& operator>>(std::istream& in, User_string& name)
     name.size = strlen(name.get_string());
 
     return in;
+}
+
+void print_array_of_user_string(User_string *photos[], size_t photo_count)
+{
+    for(size_t i = 0; i < photo_count; i++)
+    {
+        std::cout << photos[i] << '\n';
+    }
 }
 
 int main1()

@@ -2,12 +2,17 @@
 #include<fstream>
 #include "diary.hpp"
 
-Diary::Diary(User_string _destination, Date _from, Date _until, unsigned short _grade, User_string _comment, User_string _photos[])
+Diary::Diary(User_string _destination, Date _from, Date _until, unsigned short _grade, User_string _comment, User_string *_photos[])
     : destination(_destination), from(_from), until(_until), grade(_grade), comment(_comment)
 {
     //add_photos();
-    
-    // TODO: implement array of photo names
+    size_t photo_size = sizeof(_photos) / sizeof(_photos[0]);
+    *photos = new User_string[photo_size];
+
+    for(size_t i = 0; i < photo_size; i++)
+    {
+        photos[i] = _photos[i]; 
+    }
 }
 
 bool validate_grade(const unsigned short grade)
@@ -15,18 +20,20 @@ bool validate_grade(const unsigned short grade)
     return grade >= 1 && grade <= 5;
 }
 
-/*void Diary::add_photos(std::istream& in)
+void Diary::add_photos(std::istream& in)
 {
-    unsigned photo_count = 0;
+    size_t photo_count = 0;
 
     do
     {
-        in >> photos[photo_count];
+        in >> *(photos[photo_count]);
         photo_count++;
+
+        print_array_of_user_string(photos, photo_count);
 
     } while(in);
     
-}*/
+}
 
 void Diary::create_diary_entry()
 {
@@ -41,12 +48,16 @@ void Diary::create_diary_entry()
     do
     {
         std::cout << "Enter start date:\n";
-
         std::cin >> from;
 
         std::cout << "Enter end date:\n";
         std::cin >> until;
-    } while (!(from.validate_date() && until.validate_date()));    
+    } while (!(validate_date(from) && validate_date(until) && (from < until)));    
+}
+
+void write_date_in_file(std::ofstream& file, const Date& _date)
+{
+    file.write(reinterpret_cast<const char*>(&_date), sizeof(Date));
 }
 
 void write_user_strings(std::ofstream& file, Diary& new_diary)

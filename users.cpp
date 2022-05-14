@@ -27,9 +27,9 @@ bool validate_username(User_string& username)
 {
     for(size_t i = 0; i < username.get_size(); i++)
     {
-        if(!(username[i] >= '0' && username[i] <= '9') &&
-           !(username[i] >= 'A' && username[i] <= 'Z') &&
-           !(username[i] >= 'a' && username[i] <= 'z'))
+        if(!(username.get_string()[i] >= '0' && username.get_string()[i] <= '9') &&
+           !(username.get_string()[i] >= 'A' && username.get_string()[i] <= 'Z') &&
+           !(username.get_string()[i] >= 'a' && username.get_string()[i] <= 'z'))
         {
             std::cerr << "Invalid username! You can only use letters and numbers!\n";
             return false;
@@ -37,6 +37,27 @@ bool validate_username(User_string& username)
     }
 
     return true;
+}
+
+bool validate_email(User_string& email)
+{
+    bool has_at_symbol = false;
+    bool has_dot = false;
+
+    for(size_t i = 0; i < email.get_size(); i++)
+    {
+        if(email.get_string()[i] == '@')
+        {
+            has_at_symbol = true;
+        }
+
+        if(email.get_string()[i] == '.' && has_at_symbol)
+        {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void User::registration()

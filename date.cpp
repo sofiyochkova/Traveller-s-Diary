@@ -2,52 +2,63 @@
 #include<iostream>
 #include "date.hpp"
 
-bool Date::validate_date()
+Date::Date(unsigned short _day, unsigned short _month, unsigned short _year)
+    : day(_day), month(_month), year(_year)
+{}
+
+
+bool validate_date(const Date& _date)
 {
-    if(day >= 1 && day <= 31 && month >= 1 && month <= 12)
+    if(_date.get_day() >= 1 && _date.get_day() <= 31 && _date.get_month() >= 1 && _date.get_month() <= 12)
     {
-        switch(month)
+        switch(_date.get_month())
         {
-            case 1: case 3: case 5: case 7: case 8: case 10: case 12: return day <= 31;
-            case 4: case 6: case 9: case 11: return day <= 30;
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12: return _date.get_day() <= 31;
+            case 4: case 6: case 9: case 11: return _date.get_day() <= 30;
         
             case 2: 
-                if(year % 4 == 0) 
-                    return day <= 29;
-                else return day <= 28;
+                if(_date.get_year() % 4 == 0) 
+                    return _date.get_day() <= 29;
+                else return _date.get_day() <= 28;
         }
     }
     
     return false;
 }
 
-void write_date_in_file(std::fstream file, Date& _date)
-{
-    file.write(reinterpret_cast<char*>(&_date), sizeof(Date));
-}
-
 std::istream& operator>>(std::istream& in, Date& _date)
 {   
     char c;
-    in >> _date.day;
-    in.get(c);
-    in >> _date.month;
-    in.get(c);
-    in >> _date.year;
+
+    do{
+        in >> _date.day;
+        in.get(c);
+        in >> _date.month;
+        in.get(c);
+        in >> _date.year;
+    } while(!validate_date(_date));
 
     return in;
 }
 
 std::ostream& operator<<(std::ostream& out, Date& _date)
 {
-    return out << _date.day << '.' << _date.month << '.' << _date.year << '\n';
+    return out << _date.get_day() << '.' << _date.get_month() << '.' << _date.get_year() << '\n';
 }
 
-int main()
+bool Date::operator<(const Date& rhs) const
 {
-    Date d1;
-    std::cin >> d1;
+    //*this < rhs
+    if(get_year() <= rhs.get_year())
+    {
+        if(get_month() <= rhs.get_month())
+        {
+            if(get_day() <= rhs.get_day())
+            {
+                return true;
+            }
+        }
+    }
 
-    std::cout << d1 << '\n';
-    return 0;
+    return false;
 }

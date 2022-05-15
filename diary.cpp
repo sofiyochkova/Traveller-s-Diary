@@ -95,7 +95,7 @@ void Diary::add_photos(std::istream& in)
             std::cout << "Enter name of photo " << i + 1 << ":\n";
             in.getline(tmp, 100);
             
-        } while(strlen(tmp) <= 4 || !validate_filenames(tmp) /*|| !has_a_dot*/);
+        } while(strlen(tmp) <= 4 || !validate_filenames(tmp));
         
         photos[i].set_string(tmp);
     }
@@ -104,7 +104,9 @@ void Diary::add_photos(std::istream& in)
 
 std::ostream& operator<<(std::ostream& out, const Diary& diary)
 {
-    out << diary.get_destination().get_string() << ' ' << diary.get_from_date() << diary.get_until_date() << diary.get_grade() << ' '
+    out << diary.get_destination().get_string() << '\n' 
+        << diary.get_from_date() << diary.get_until_date() 
+        << diary.get_grade() << ' '
         << diary.get_comment().get_string() << '\n'; 
     
     for(size_t i = 0; i < diary.get_number_of_photos(); i++)
@@ -116,7 +118,7 @@ std::ostream& operator<<(std::ostream& out, const Diary& diary)
 
 }
 
-void Diary::create_diary_entry(User& user, std::istream& in)
+void Diary::create_diary_entry(std::istream& in)
 {
     char _destination[200];
 
@@ -154,15 +156,23 @@ void Diary::create_diary_entry(User& user, std::istream& in)
     in.ignore();
     
     add_photos();
+
+    std::cout << "Successfully entered data!\n";
+
+    std::cout << *this;
+
+    return;
 }
 
-void write_date_in_file(std::ofstream& file, const Date& _date)
+void write_date_in_file(std::fstream& file, const Date& _date)
 {
     file.write(reinterpret_cast<const char*>(&_date), sizeof(Date));
 }
 
-void write_user_strings(std::ofstream& file, Diary& new_diary)
+void write_user_diary(std::fstream& file, Diary& new_diary)
 {
+    file.seekp(0, std::ios::end);
+
     file.write(new_diary.get_destination().get_string(), new_diary.get_destination().get_size() + 1);
 
     file.write(reinterpret_cast<const char*>(new_diary.get_grade()), 2);
@@ -181,16 +191,11 @@ Diary::~Diary()
     delete[] photos;
 }
 
-int main()
+int main2()
 {
-    User_string p[] = {"winter", "summer"};
-
-    //Diary d1(User_string("Burgas"), Date(2, 4, 2002), Date(3, 4, 2002), 3, User_string("nonono"), 2, p);
-    //std::cout << d1;
-
-    User u1;
     Diary d1;
-    d1.create_diary_entry(u1);
+    d1.create_diary_entry();
 
-    //std::cout << d1;
+    std::cout << d1;
+    return 0;
 }

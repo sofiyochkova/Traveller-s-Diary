@@ -1,13 +1,13 @@
 #include<iostream>
 #include<cstring>
 #include "users.hpp"
+#include "diary.hpp"
 
 const char ext[] = ".db";
-char test[] = "\0";
     
-std::ofstream users("users.db", std::ios::out | std::ios::binary | std::ios::app);
+std::fstream users("users.db", std::ios::out | std::ios::in | std::ios::binary | std::ios::app);
 
-void write_user_strings(std::ofstream& file, const User& new_user)
+void write_user_data(std::fstream& file, const User& new_user)
 {
     file.write(new_user.get_username(), new_user.username.get_size() + 1);
 
@@ -16,14 +16,14 @@ void write_user_strings(std::ofstream& file, const User& new_user)
     file.write(new_user.get_email(), new_user.email.get_size() + 2);
 }
 
-void write_user_in_file(std::ofstream& file, const User& new_user)
+void write_user_in_file(std::fstream& file, const User& new_user)
 {
     file.seekp(0, std::ios::end);
 
-    write_user_strings(file, new_user);
+    write_user_data(file, new_user);
 }
 
-bool validate_username(User_string& username)
+bool validate_username(const User_string& username)
 {
     for(size_t i = 0; i < username.get_size(); i++)
     {
@@ -39,19 +39,21 @@ bool validate_username(User_string& username)
     return true;
 }
 
-bool validate_email(User_string& email)
+bool validate_email(const User_string& email)
 {
     bool has_at_symbol = false;
-    bool has_dot = false;
 
     for(size_t i = 0; i < email.get_size(); i++)
     {
+        size_t pos;
+
         if(email.get_string()[i] == '@')
         {
             has_at_symbol = true;
+            pos = i;
         }
 
-        if(email.get_string()[i] == '.' && has_at_symbol)
+        if(has_at_symbol && i > pos && email.get_string()[i] == '.')
         {
             return true;
         }
@@ -60,6 +62,24 @@ bool validate_email(User_string& email)
     std::cout << "Invalid email!\n";
 
     return false;
+}
+
+char *get_filename(const User& new_user)
+{
+    User_string filename = new_user.get_username();
+    filename += ext;
+
+    return filename.get_string();
+}
+
+std::fstream create_user_database(const User& new_user)
+{
+    User_string filename = new_user.get_username();
+    filename += ext;
+
+    std::fstream user_db(filename.get_string(), std::ios::binary);
+
+    return user_db;
 }
 
 void User::registration()
@@ -71,37 +91,62 @@ void User::registration()
     } while (!validate_username(username));
     
     std::cout << "Enter password: ";
-    std::cin.clear();
     std::cin >> password;
 
-    std::cout << "Enter email address: ";
-    std::cin >> email;
-
+    do
+    {
+        std::cout << "Enter email address: ";
+        std::cin >> email;
+    } while (!validate_email(email));
+    
     write_user_in_file(users, *this);
 
     create_user_database(*this);
+
     std::cout << "You have registered successfully!\n";
+}
+
+void logged_in_menu(User& user)
+{
+    User_string command;
+
+    std::cout << "Enter \"new_entry\" to create a new diary entry:\n";
+
+    while(command != "exit")
+    {
+        std::cin >> command;
+
+        if(command == "new_entry")
+        {            
+            User u1;
+            Diary d1;
+
+            std::cin.ignore();
+
+            d1.create_diary_entry();
+            
+            std::fstream file(get_filename(user), std::ios::binary);
+            write_user_diary(file, d1);
+        }
+
+        else if(command != "exit")
+        {
+            std::cerr << "Invalid command!\n";
+        }
+    }
 }
 
 void User::login()
 {
     std::cout << "Enter username: ";
     std::cin >> username;
-
+        
     std::cout << "Enter password: ";
     std::cin >> password;
-
+    
     std::cout << "You have logged in successfully!\n";
-}
 
-std::ofstream create_user_database(const User& new_user)
-{
-    User_string filename = new_user.get_username();
-    filename += ext;
- 
-    std::ofstream user_db(filename.get_string(), std::ios::out | std::ios::binary);
-
-   return user_db;
+    logged_in_menu(*this);
 }
 
 std::ostream& menu_commands()
@@ -115,7 +160,7 @@ std::ostream& menu_commands()
 
 void menu()
 {   
-    User_string command{"\0"};
+    User_string command;
 
     menu_commands();
 

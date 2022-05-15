@@ -3,6 +3,12 @@
 #include<algorithm>
 #include "user_string.hpp"
 
+User_string::User_string()
+    : string(nullptr), size(0)
+{   
+    set_string("\0");
+}
+
 User_string::User_string(const char *_string)
     : string(nullptr)
 {   
@@ -60,37 +66,10 @@ void User_string::swap_string(User_string& other)
     std::swap(size, other.size);
 }
 
-/*char User_string::operator[](size_t pos)
-{
-    return string[pos];
-}*/
-
 std::istream& operator>>(std::istream& in, User_string& name)
 {
     in >> name.string;
     name.size = strlen(name.get_string());
 
     return in;
-}
-
-void print_array_of_user_string(User_string *photos[], size_t photo_count)
-{
-    for(size_t i = 0; i < photo_count; i++)
-    {
-        std::cout << photos[i] << '\n';
-    }
-}
-
-int main1()
-{
-    User_string k("idkteeyeyeeyeyeyyey");
-    
-    User_string c{"\0"};
-    std::cin >> c;
-
-    std::cout << c.get_string() << " " << c.get_size() << '\n';
-    
-   // std::cout << (c == k) << '\n';
-
-    return 0;
 }

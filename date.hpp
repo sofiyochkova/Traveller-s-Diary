@@ -22,6 +22,6 @@ class Date
 
 bool validate_date(const Date& date);
 //void write_date_in_file(std::ofstream& file, const Date& _date);
-std::ostream& operator<<(std::ostream& out, Date& _date);
+std::ostream& operator<<(std::ostream& out, const Date& _date);
 
 #endif

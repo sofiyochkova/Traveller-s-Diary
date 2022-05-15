@@ -57,6 +57,8 @@ bool validate_email(User_string& email)
         }
     }
 
+    std::cout << "Invalid email!\n";
+
     return false;
 }
 
@@ -123,13 +125,13 @@ void menu()
 
         if(command == "register")
         {
-            User u1(test, test, test);
+            User u1;
             u1.registration();
         }
 
         else if(command == "login")
         {
-            User u2(test, test, test);
+            User u2;
             u2.login();
         }
 

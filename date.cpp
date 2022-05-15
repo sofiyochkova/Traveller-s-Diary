@@ -23,6 +23,7 @@ bool validate_date(const Date& _date)
         }
     }
     
+    std::cerr << "Invalid date!\n";
     return false;
 }
 
@@ -41,7 +42,7 @@ std::istream& operator>>(std::istream& in, Date& _date)
     return in;
 }
 
-std::ostream& operator<<(std::ostream& out, Date& _date)
+std::ostream& operator<<(std::ostream& out, const Date& _date)
 {
     return out << _date.get_day() << '.' << _date.get_month() << '.' << _date.get_year() << '\n';
 }

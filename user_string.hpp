@@ -10,11 +10,11 @@ class User_string
         char *string;
         size_t size;
 
-        void set_string(const char *_string);
+        //void set_string(const char *_string);
 
     public:
 
-        User_string() = default;
+        User_string();
 
         User_string(const char *_string);
 
@@ -33,6 +33,9 @@ class User_string
         User_string& operator+=(const char rhs[]);
 
         friend std::istream& operator>>(std::istream& in, User_string& name);
+        friend std::istream& operator>>(std::istream& in, User_string *name);
+
+        void set_string(const char *_string);
 
         ~User_string()
         {
